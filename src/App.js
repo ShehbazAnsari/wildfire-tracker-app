@@ -1,23 +1,30 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import Map from './components/Map'
+import axios from 'axios'
+import Loader from './components/Loader'
+import Header from './components/Header'
 
 function App() {
+
+  const [eventData, setEventData] = useState([])
+  const [loading, setloading] = useState(false)
+
+  useEffect(() => {
+
+    setloading(true)
+    const fetchEvents = async () => {
+      const { data: { events } } = await axios.get('Enter Your NASA Api')
+      setEventData(events)
+      setloading(false)
+    }
+    fetchEvents()
+  }, [])
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+
+    <div>
+      <Header />
+      {!loading ? <Map eventData={eventData} /> : <Loader />}
     </div>
   );
 }
